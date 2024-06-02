@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_filters %}
+{% load static %}
+
+{% block title %}Список сотрудников{% endblock %}
+
+{% block content %}
+
+<style>
+    .logo-container {
+        position: fixed;
+        bottom: 20px;
+        right: 200px;
+        display: flex;
+        align-items: center;
+    }
+    .logo-background {
+        position: fixed;
+        bottom: -50px;
+        right: -50px;
+        width: 300px;
+        height: auto;
+        opacity: 1.0;
+    }
+    .logo-text {
+        font-size: 18px;
+        color: #000;
+        font-weight: bold;
+    }
+    .content-container {
+        padding: 20px;
+    }
+</style>
+
+<div class="content-container">
+    <h2>Список сотрудников</h2>
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th class="text-center align-middle">ID</th>
+                <th class="text-center align-middle">Фамилия</th>
+                <th class="text-center align-middle">Имя</th>
+                <th class="text-center align-middle">Отчество</th>
+                <th class="text-center align-middle">Должность</th>
+                <th class="text-center align-middle">Отдел</th>
+                <th class="text-center align-middle">Дата приема</th>
+                <th class="text-center align-middle">Дата рождения</th>
+                <th class="text-center align-middle">Мобильный телефон</th>
+                <th class="text-center align-middle">Электронная почта</th>
+                <th class="text-center align-middle">Адрес проживания</th>
+                <th class="text-center align-middle">Статус</th>
+                <th class="text-center align-middle">Комментарий</th>
+                <th class="text-center align-middle">Действие</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for employee in employees %}
+            <tr>
+                <td class="text-center align-middle">{{ employee.id }}</td>
+                <td class="text-center align-middle">{{ employee.last_name }}</td>
+                <td class="text-center align-middle">{{ employee.first_name }}</td>
+                <td class="text-center align-middle">{{ employee.middle_name }}</td>
+                <td class="text-center align-middle">{{ employee.position }}</td>
+                <td class="text-center align-middle">{{ employee.department }}</td>
+                <td class="text-center align-middle">{{ employee.hire_date }}</td>
+                <td class="text-center align-middle">{{ employee.birth_date }}</td>
+                <td class="text-center align-middle">{{ employee.phone_number }}</td>
+                <td class="text-center align-middle">{{ employee.email }}</td>
+                <td class="text-center align-middle">{{ employee.address }}</td>
+                <td class="text-center align-middle">{{ employee.status }}</td>
+                <td class="text-center align-middle">{{ employee.projects }}</td>
+                <td class="text-center align-middle">
+                    <a href="{% url 'employee_edit' employee.id %}" class="btn btn-sm btn-primary mb-2 d-block w-100">Ред.</a>
+                    <form method="post" action="{% url 'employee_delete' employee.id %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-danger d-block w-100">Удалить</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'employee_create' %}" class="btn btn-success">Добавить нового сотрудника</a>
+    <a href="{% url 'export_to_excel' %}" class="btn btn-info mx-2 color text-white">Экспортировать в Excel файл</a>
+</div>
+
+<div class="logo-container">
+    <img src="{% static 'images/logo.png' %}" alt="Пятерочка Логотип" class="logo-background">
+    <div class="logo-text">Пятерочка финанс</div>
+</div>
+
+{% endblock %}
