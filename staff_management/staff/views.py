@@ -1,4 +1,5 @@
 import pandas as pd
+from django.contrib.auth.decorators import login_required
 
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -13,6 +14,15 @@ from io import BytesIO
 from urllib.parse import quote
 
 
+#from .serializers import EmployeeSerializer
+#from rest_framework import viewsets
+
+
+#class EmployeeViewSet(viewsets.ModelViewSet):
+#    queryset = Employee.objects.all()
+#    serializer_class = EmployeeSerializer
+
+
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, request.POST)
@@ -22,7 +32,7 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('employee_list')  # Перенаправить на страницу учета пользователей
+                return redirect('employee_list')
             else:
                 messages.error(request, 'Invalid username or password.')
     else:
@@ -36,7 +46,7 @@ def register_view(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('employee_list')  # Перенаправить на страницу учета пользователей
+            return redirect('employee_list')
     else:
         form = UserCreationForm()
     return render(request, 'register.html', {'form': form})
@@ -47,6 +57,7 @@ def logout_view(request):
     return redirect('login')
 
 
+@login_required
 def employee_create(request):
     if request.method == 'POST':
         form = EmployeeForm(request.POST)
@@ -58,11 +69,13 @@ def employee_create(request):
     return render(request, 'employee_form.html', {'form': form})
 
 
+@login_required
 def employee_list(request):
     employees = Employee.objects.all().order_by('id')
     return render(request, 'employee_list.html', {'employees': employees})
 
 
+@login_required
 def employee_edit(request, pk):
     employee = get_object_or_404(Employee, pk=pk)
     if request.method == 'POST':
@@ -75,6 +88,7 @@ def employee_edit(request, pk):
     return render(request, 'employee_form.html', {'form': form})
 
 
+@login_required
 def employee_delete(request, pk):
     employee = get_object_or_404(Employee, pk=pk)
     if request.method == 'POST':
@@ -82,6 +96,7 @@ def employee_delete(request, pk):
     return redirect('employee_list')
 
 
+@login_required
 def export_to_excel(request):
     employees = Employee.objects.all().values()
     df = pd.DataFrame(employees)

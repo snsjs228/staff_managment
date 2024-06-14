@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'staff',
     'crispy_forms',
     'crispy_bootstrap5',
+    'django_extensions',
+    'rest_framework',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
